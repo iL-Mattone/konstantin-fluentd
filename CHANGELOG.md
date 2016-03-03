@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 2016-03-03 - Release Branch feature/ruby1.8.7 
+
+ - params.pp : for backward compatibility with ruby 1.8.7 seems to work better when moving the conditional check for serviceprovider ( https://tickets.puppetlabs.com/browse/PUP-5296 ) into the osfamily catch block.
+ - install_repo.pp : added a conditional if-block if we dont want to specify ( or cant use for whatever reason ) the gpgkey for the case of redhat/centos rpms.   
+
 ## 2016-01-22 - Release v. 0.3.2
 
  - Purge unmanaged config files

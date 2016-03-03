@@ -1,19 +1,34 @@
 class fluentd::install_repo inherits fluentd {
   case $::osfamily {
     'redhat': {
-      yumrepo { $fluentd::repo_name:
-        descr    => $fluentd::repo_desc,
-        baseurl  => $fluentd::repo_url,
-        enabled  => $fluentd::repo_enabled,
-        gpgcheck => $fluentd::repo_gpgcheck,
-        gpgkey   => $fluentd::repo_gpgkey,
-        notify   => Exec['rpmkey'],
-      }
+      if $fluentd::repo_gpgcheck {
+        # lets do a gpgcheck f we can as part of the repo definition and force an rpm import using the current gpgkey ...
 
-      exec { 'rpmkey':
-        command     => "rpm --import ${fluentd::repo_gpgkey}",
-        path        => '/usr/bin',
-        refreshonly => true,
+         yumrepo { $fluentd::repo_name:
+           descr    => $fluentd::repo_desc,
+           baseurl  => $fluentd::repo_url,
+           enabled  => $fluentd::repo_enabled,
+           gpgcheck => $fluentd::repo_gpgcheck,
+           gpgkey   => $fluentd::repo_gpgkey,
+           notify   => Exec['rpmkey'],
+         }
+
+         exec { 'rpmkey':
+           command     => "rpm --import ${fluentd::repo_gpgkey}",
+           path        => '/usr/bin',
+           refreshonly => true,
+         }
+      }
+      else {
+        # we dont have the gpgkey so lets not do a gpgcheck as part of the repo definition
+
+         yumrepo { $fluentd::repo_name:
+           descr    => $fluentd::repo_desc,
+           baseurl  => $fluentd::repo_url,
+           enabled  => $fluentd::repo_enabled,
+           gpgcheck => $fluentd::repo_gpgcheck,
+         }
+
       }
 
       # TODO: Remove this dependency. Gem provider requires this package.

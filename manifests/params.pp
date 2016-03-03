@@ -6,6 +6,8 @@ class fluentd::params {
   case $::osfamily {
     'redhat': {
       $repo_url = 'http://packages.treasuredata.com/2/redhat/$releasever/$basearch'
+      # Workaround for the following issue:
+      # https://tickets.puppetlabs.com/browse/PUP-5296
       $service_provider = 'redhat'
     }
 
@@ -36,10 +38,6 @@ class fluentd::params {
   $service_ensure = running
   $service_enable = true
   $service_manage = true
-
-  # Workaround for the following issue:
-  # https://tickets.puppetlabs.com/browse/PUP-5296
-  #$service_provider = if $::osfamily == 'redhat' { 'redhat' }
 
   $config_file = '/etc/td-agent/td-agent.conf'
   $config_path = '/etc/td-agent/config.d'
